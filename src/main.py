@@ -30,16 +30,20 @@ async def create_upload_file(file: UploadFile):
     lines = contents.splitlines()
     new_data = []
     text = []
+    isUser = False
+
     for line in lines:
-        user = ""
+        if len(text) > 0 and isUser:
+            new_data.append({"user": user, "data": text})
+            isUser = False
+
         # print(line)
         if R'";"' in str(line):
             print(line)
+            isUser = True
             user = line
-            if len(text) > 0:
-                new_data.append({"user": user, "data": text})
             text = []
-        elif (
+        if (
             R"\"'" not in str(line)
             and R'";"' not in str(line)
             and R';"' not in str(line)
@@ -48,9 +52,6 @@ async def create_upload_file(file: UploadFile):
         ):
             print(line)
             text.append(line)
-
-        # elif R"\"" not in str(line):
-        # user["content"].append(line)
 
     return new_data
 
