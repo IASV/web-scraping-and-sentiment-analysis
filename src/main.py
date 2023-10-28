@@ -51,7 +51,11 @@ async def create_upload_file(file: UploadFile):
             and R";user;comment" not in str(line)
         ):
             print(line)
-            text.append(line)
+            analyzer.setTextAnalizer(str(line))
+            if len(str(line)) >= 512:
+                text.append({"text": line, "analysis": f"invalid lenght characters"})
+            else:
+                text.append({"text": line, "analysis": analyzer.getSentimentAnalizer()})
 
     return new_data
 
