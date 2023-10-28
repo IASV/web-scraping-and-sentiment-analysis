@@ -27,7 +27,32 @@ async def get_data_scraping():
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile):
     contents = await file.read()
-    return contents.splitlines()
+    lines = contents.splitlines()
+    new_data = []
+    text = []
+    for line in lines:
+        user = ""
+        # print(line)
+        if R'";"' in str(line):
+            print(line)
+            user = line
+            if len(text) > 0:
+                new_data.append({"user": user, "data": text})
+            text = []
+        elif (
+            R"\"'" not in str(line)
+            and R'";"' not in str(line)
+            and R';"' not in str(line)
+            and R'"' not in str(line)
+            and R";user;comment" not in str(line)
+        ):
+            print(line)
+            text.append(line)
+
+        # elif R"\"" not in str(line):
+        # user["content"].append(line)
+
+    return new_data
 
 
 @app.post("/")
